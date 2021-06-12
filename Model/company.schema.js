@@ -1,16 +1,10 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
 
-var tenderorbidder = new mongoose.Schema({
+var compSch = new mongoose.Schema({
   username:{
     type: String,
-  },
-  phone:{
-    unique: true,
-    type: String,
-  },
-  selectedFile:{
-   type:String,
+    required:true
   },
   email: {
     unique: true,
@@ -24,16 +18,9 @@ var tenderorbidder = new mongoose.Schema({
     type: String,
     required: true,
   },
-  cpassword: {
-    type: String,
-    required: true,
-  },
-  status:{
-    type: String,
-    required: true,
-  }
+
 }); 
  
-const usersignup = new mongoose.model("tenderbidder", tenderorbidder);
+const company = new mongoose.model("companyModel", compSch);
  
-module.exports = { usersignup };
+module.exports = { company };
