@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const path = require("path")
 const router = require('../controller/routes');
 const app = express();
 app.use(cors()); 
@@ -11,6 +12,10 @@ app.get("/",(req,res)=>{
   res.send("welcome to tender JB-Desk backend")
 })
 app.use("/user",router)
+app.use("/public//images//", express.static(path.join("public/images/")));
+app.use("/public/images/", express.static(path.join("public/images/")));
+app.use("/public\\images\\", express.static(path.join("public/images/")));
+
 app.listen(Port, () => {
   console.log(`server is listening at port ${Port}`);
 });

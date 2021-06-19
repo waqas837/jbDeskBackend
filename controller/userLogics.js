@@ -1,6 +1,7 @@
 const { usersignup } = require("../Model/userSchema");
 const { company } = require("../Model/company.schema");
 const { adminModel } = require("../Model/admin.schema");
+const { singleJobModel } = require("../Model/singlejob.schema");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 // signup user
@@ -138,12 +139,11 @@ const getData = async (req, res) => {
 //delete a single user by id
 const deleteUser = async (req, res) => {
   try {
-    const users = await usersignup.findByIdAndDelete({_id:req.params.id});
-    if(users!==null){
-      res.status(200).json({success:true})
-    }
-    else if(users===null){
-      res.status(404).json({error:new Error("error occured")})
+    const users = await usersignup.findByIdAndDelete({ _id: req.params.id });
+    if (users !== null) {
+      res.status(200).json({ success: true });
+    } else if (users === null) {
+      res.status(404).json({ error: new Error("error occured") });
     }
   } catch (error) {
     res.json({ error });
@@ -154,7 +154,7 @@ const deleteUser = async (req, res) => {
 //find as single user for edit
 const findSingleUser = async (req, res) => {
   try {
-    const users = await usersignup.findById({_id:req.params.id});
+    const users = await usersignup.findById({ _id: req.params.id });
     if (users === null) {
       res.status(404).json({
         null: new Error("All is ok but not results found your query"),
@@ -170,23 +170,86 @@ const findSingleUser = async (req, res) => {
 //find and update a single user
 const udpateUser = async (req, res) => {
   try {
-    const users = await usersignup.findByIdAndUpdate({_id:req.params.id},req.body);
+    const users = await usersignup.findByIdAndUpdate(
+      { _id: req.params.id },
+      req.body
+    );
     if (users === null) {
       res.json({
         null: new Error("All is ok but not results found your query"),
       });
     } else if (users !== null) {
-      res .json({ success: "true", results: users });
+      res.json({ success: "true", results: users });
     }
   } catch (error) {
     res.json({ error });
     console.log(`error during finding all the users ${error}`);
   }
 };
+
+//add a new job
+const addnewjob = async (req, res) => {
+  console.log(req.file);
+  console.log(req.body);
+  const { path: logo } = req.file;
+  try {
+    const jobs = new singleJobModel({
+      jobtitle: req.body.jobtitle,
+      companyname: req.body.companyname,
+      date: req.body.date,
+      location: req.body.location,
+      workinghours: req.body.workinghours,
+      type: req.body.type,
+      salary: req.body.salary,
+      category: req.body.category,
+      experience: req.body.experience,
+      jobdescription: req.body.jobdescription,
+      minimumqulification: req.body.minimumqulification,
+      howtoapply: req.body.howtoapply,
+      jobresp: req.body.jobresp,
+      totalhrs: req.body.totalhrs,
+      time: req.body.time,
+      logo: logo,
+    });
+    await jobs.save();
+    if (jobs === null) {
+      res.status(404).json({
+        null: new Error("All is ok but not results found your query"),
+      });
+    } else if (jobs !== null) {
+      res.status(200).json({ success: "true", results: jobs });
+    }
+  } catch (error) {
+    res.json({ error });
+    console.log(`error during finding all the jobs ${error}`);
+  }
+};
+//get a single job data
+const getsinglejob = async (req, res) => {
+  try {
+    const jobs = await singleJobModel.find();
+    if (jobs === null) {
+      res.status(404).json({
+        null: new Error("All is ok but not results found your query"),
+      });
+    } else if (jobs !== null) {
+      res.status(200).json({ success: "true", results: jobs });
+    }
+  } catch (error) {
+    res.json({ error });
+    console.log(`error during finding all the jobs ${error}`);
+  }
+};
+
 module.exports = {
   signup,
   login,
   logincompany,
   adminlogin,
-  getData,deleteUser,findSingleUser,udpateUser
-}
+  getsinglejob,
+  getData,
+  deleteUser,
+  findSingleUser,
+  udpateUser,
+  addnewjob,
+};

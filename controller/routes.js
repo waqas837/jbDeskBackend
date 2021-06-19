@@ -1,5 +1,7 @@
 const express = require("express");
+// user authentication for all the routes
 const { Auth } = require("../middleware/Auth");
+const uploadImg = require("../middleware/uploadImg");
 const router = express.Router();
 const {
   login,
@@ -10,6 +12,8 @@ const {
   deleteUser,
   findSingleUser,
   udpateUser,
+  addnewjob,
+  getsinglejob,
 } = require("./userLogics");
 // routes for user account/tender/poster
 router.post("/signup", signup);
@@ -26,4 +30,8 @@ router.delete("/deleteUser/:id", Auth, deleteUser);
 router.get("/findSingleUser/:id", Auth, findSingleUser);
 // udpateUser
 router.put("/udpateUser/:id", Auth, udpateUser);
+// add a new job
+router.post("/addnewjob", Auth, uploadImg.single("image"), addnewjob);
+// get single job data
+router.get("/getsinglejob", Auth, getsinglejob);
 module.exports = router;
