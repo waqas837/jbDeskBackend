@@ -1,6 +1,9 @@
 const mongoose = require("mongoose");
 
 var singlejob = new mongoose.Schema({
+  role:{
+    type:String
+  },
   jobtitle: {
     type: String,
     // required: true,
