@@ -1,11 +1,12 @@
 const mongoose = require("mongoose");
 
 var singlejob = new mongoose.Schema({
-  role:{
-    type:String
+  role: {
+    type: String,
   },
   jobtitle: {
     type: String,
+    trim:true
     // required: true,
   },
   companyname: {
@@ -18,6 +19,7 @@ var singlejob = new mongoose.Schema({
   },
   location: {
     type: String,
+    trim:true
     // required: true,
   },
 
@@ -62,10 +64,13 @@ var singlejob = new mongoose.Schema({
     type: String,
     // required: true,
   },
-  logo:{
+  logo: {
     type: String,
     // required: true,
-  }
+  },
+  candidates: [
+    { candidate: { type: mongoose.Schema.Types.ObjectId, ref: "candidate",unique:true } },
+  ],
 });
 
 const singleJobModel = new mongoose.model("singlejob", singlejob);

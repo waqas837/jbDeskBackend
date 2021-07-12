@@ -420,7 +420,7 @@ const candidateLogin = async (req, res) => {
     const isExists = await CandidateModel.findOne({ email, password });
 
     if (isExists !== null) {
-      console.log(isExists);
+      // console.log(isExists);
       //  we have to create the token here
       jwt.sign(
         { email: isExists.email },
@@ -445,13 +445,13 @@ const candidateLogin = async (req, res) => {
 
 const cvupload = async (req, res) => {
   const { email } = req.params;
-  console.log(req.body);
   try {
     //first we have to find a candidate
     const isExists = await CvModel.findOne({ email });
     if (isExists) {
       await CvModel.findOneAndUpdate({ email }, { $push: { cv: req.body } });
-    } if(!isExists) {
+    }
+    if (!isExists) {
       await CvModel.create({ email }, { cv: [req.body] });
     }
     // await isExists.save()
@@ -477,16 +477,64 @@ const getcvdata = async (req, res) => {
 
   try {
     //first we have to find a candidate
-    const isExists = await CvModel.findOne({ email })
+    const isExists = await CvModel.findOne({ email });
     if (isExists) {
       res.json({ success: true, data: isExists });
     }
-    console.log(isExists)
-  
+    // console.log(isExists);
   } catch (error) {
     console.log(`error during cv find ${error}`);
     console.log(error);
     // res.json({err:error});
+  }
+};
+
+// search results
+const searchResults = async (req, res) => {
+  const { location, jobtitle } = req.body;
+  try {
+    // var regex = new RegExp(["^", jobtitle, "$"].join(""), "i");
+    // var regex2 = new RegExp(["^", jobtitle, "$"].join(""), "i");
+    //first we have to find a candidate
+    const isExists = await singleJobModel
+      .find()
+      .or([{ location: location }, { jobtitle: jobtitle }]);
+
+    if (isExists) {
+      res.json({ success: true, searchResults: isExists });
+    }
+    // console.log(isExists);
+  } catch (error) {
+    console.log(`error search results for job${error}`);
+    console.log(error);
+  }
+};
+
+// apply candidate
+const apply = async (req, res) => {
+  const { jobid, candidateid } = req.params;
+  // console.log(jobid, candidateid);
+  try {
+    //first find if user has already applied to this job
+    const findUser = await singleJobModel.findOne({
+      "candidates.candidate": candidateid,
+    });
+    //if user does not applied we can apply it
+    if (!findUser) {
+      const isExists = await singleJobModel.findOneAndUpdate(
+        { _id: jobid },
+        { $push: { candidates: { candidate: candidateid } } }
+      );
+
+      if (isExists) {
+        res.json({ success: true, searchResults: isExists });
+      }
+    } else {
+      res.json({ error: "You already applied for this job" });
+    }
+  } catch (error) {
+    console.log(`error search results for job${error}`);
+    console.log(error);
   }
 };
 module.exports = {
@@ -512,4 +560,6 @@ module.exports = {
   candidateLogin,
   cvupload,
   getcvdata,
+  searchResults,
+  apply,
 };
