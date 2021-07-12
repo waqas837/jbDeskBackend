@@ -22,7 +22,7 @@ app.listen(Port, () => {
  //database connection 
 mongoose
   .connect(
- "mongodb://localhost/JBdesk",    { 
+ "mongodb+srv://jbdesk:jbdesks@cluster0.2uvx4.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",{ 
       useNewUrlParser: true,
       useUnifiedTopology: true,
       useFindAndModify: false,
