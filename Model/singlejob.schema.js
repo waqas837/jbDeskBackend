@@ -6,7 +6,7 @@ var singlejob = new mongoose.Schema({
   },
   jobtitle: {
     type: String,
-    trim:true
+    trim: true,
     // required: true,
   },
   companyname: {
@@ -19,7 +19,7 @@ var singlejob = new mongoose.Schema({
   },
   location: {
     type: String,
-    trim:true
+    trim: true,
     // required: true,
   },
 
@@ -69,7 +69,10 @@ var singlejob = new mongoose.Schema({
     // required: true,
   },
   candidates: [
-    { candidate: { type: mongoose.Schema.Types.ObjectId, ref: "candidate"} },
+    {
+      candidate: { type: mongoose.Schema.Types.ObjectId, ref: "candidate" },
+      approved: false,
+    },
   ],
 });
 

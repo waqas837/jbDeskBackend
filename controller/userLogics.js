@@ -5,6 +5,7 @@ const { singleJobModel } = require("../Model/singlejob.schema");
 const { CvModel } = require("../Model/CandidateCVModel");
 const jwt = require("jsonwebtoken");
 const { CandidateModel } = require("../Model/CandidateSchema");
+const { approvedModel } = require("../Model/approvedJobs");
 // signup user
 const signup = async (req, res) => {
   const data = req.body;
@@ -517,7 +518,8 @@ const apply = async (req, res) => {
   try {
     //first find if user has already applied to this job
     const findUser = await singleJobModel.findOne({
-      "candidates.candidate": candidateid,_id:jobid
+      "candidates.candidate": candidateid,
+      _id: jobid,
     });
     //if user does not applied we can apply it
     if (!findUser) {
@@ -544,7 +546,7 @@ const seeApplicants = async (req, res) => {
   try {
     //first find if user has already applied to this job
     const findUser = await singleJobModel.find({
-      "candidates.candidate":{$exists:true}
+      "candidates.candidate": { $exists: true },
     });
     if (findUser) {
       res.json({ success: true, results: findUser });
@@ -556,13 +558,51 @@ const seeApplicants = async (req, res) => {
 };
 // see Applicants
 const seeApplicantsDetails = async (req, res) => {
-  const { candidateid,jobid } = req.params;
+  const { candidateid, jobid } = req.params;
   // console.log(jobid, candidateid);
   try {
     //first find if user has already applied to this job
-    const findUser = await singleJobModel.find({
-      "candidates.candidate":{$exists:true},_id:jobid
-    }).populate("candidates").select("candidates");
+    const findUser = await singleJobModel
+      .find({
+        "candidates.candidate": { $exists: true },
+        _id: jobid,
+      })
+      .populate("candidates.candidate")
+      .select("candidate.candidate");
+    if (findUser) {
+      res.json({ success: true, results: findUser });
+    }
+  } catch (error) {
+    console.log(`error search results for job${error}`);
+    console.log(error);
+  }
+};
+// approve application
+const approve = async (req, res) => {
+  const { candidateid, jobid } = req.params;
+  // console.log(jobid, candidateid);
+  try {
+    //first find if user has already applied to this job
+    const findUser = await approvedModel.create({
+      approved: [{ userid: candidateid, jobid: jobid }],
+    });
+    if (findUser) {
+      res.json({ success: true, results: findUser });
+    }
+  } catch (error) {
+    console.log(`error search results for job${error}`);
+    console.log(error);
+  }
+};
+// notifications For ApprovedJobs
+const notificationsForApprovedJobs = async (req, res) => {
+  const { candidateid } = req.params;
+  // console.log(jobid, candidateid);
+  try {
+    //first find if user has already applied to this job
+    const findUser = await approvedModel
+      .find({"approved.userid": candidateid})
+      .populate({path:"approved.jobid"});
     if (findUser) {
       res.json({ success: true, results: findUser });
     }
@@ -597,5 +637,7 @@ module.exports = {
   searchResults,
   apply,
   seeApplicants,
-  seeApplicantsDetails
+  seeApplicantsDetails,
+  approve,
+  notificationsForApprovedJobs,
 };

@@ -26,7 +26,10 @@ const {
   cvupload,
   searchResults,
   apply,
-  seeApplicants,seeApplicantsDetails
+  seeApplicants,
+  seeApplicantsDetails,
+  approve,
+  notificationsForApprovedJobs,
 } = require("./userLogics");
 // routes for user account/tender/poster
 router.post("/signup", signup);
@@ -78,6 +81,13 @@ router.post("/apply/:jobid/:candidateid", apply);
 // seeApplicants
 router.get("/seeApplicants/:candidateid", seeApplicants);
 // seeApplicantsDetails
-router.get("/seeApplicantsDetails/:candidateid/:jobid", seeApplicantsDetails);
+router.get("/seeApplicantsDetails/:jobid", seeApplicantsDetails);
+// seeApplicantsDetails
+router.post("/approve/:jobid/:candidateid", approve);
+// notificationsForApprovedJobs
+router.get(
+  "/notificationsForApprovedJobs/:candidateid",
+  notificationsForApprovedJobs
+);
 
 module.exports = router;
