@@ -69,7 +69,7 @@ var singlejob = new mongoose.Schema({
     // required: true,
   },
   candidates: [
-    { candidate: { type: mongoose.Schema.Types.ObjectId, ref: "candidate",unique:true } },
+    { candidate: { type: mongoose.Schema.Types.ObjectId, ref: "candidate"} },
   ],
 });
 

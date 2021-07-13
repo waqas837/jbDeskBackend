@@ -23,7 +23,10 @@ const {
   getcandidatesingle,
   getcvdata,
   candidateLogin,
-  cvupload,searchResults,apply
+  cvupload,
+  searchResults,
+  apply,
+  seeApplicants,seeApplicantsDetails
 } = require("./userLogics");
 // routes for user account/tender/poster
 router.post("/signup", signup);
@@ -72,5 +75,9 @@ router.get("/getcvdata/:email", getcvdata);
 router.post("/searchResults", searchResults);
 // apply
 router.post("/apply/:jobid/:candidateid", apply);
+// seeApplicants
+router.get("/seeApplicants/:candidateid", seeApplicants);
+// seeApplicantsDetails
+router.get("/seeApplicantsDetails/:candidateid/:jobid", seeApplicantsDetails);
 
 module.exports = router;

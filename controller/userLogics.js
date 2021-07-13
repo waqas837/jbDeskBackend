@@ -517,7 +517,7 @@ const apply = async (req, res) => {
   try {
     //first find if user has already applied to this job
     const findUser = await singleJobModel.findOne({
-      "candidates.candidate": candidateid,
+      "candidates.candidate": candidateid,_id:jobid
     });
     //if user does not applied we can apply it
     if (!findUser) {
@@ -531,6 +531,40 @@ const apply = async (req, res) => {
       }
     } else {
       res.json({ error: "You already applied for this job" });
+    }
+  } catch (error) {
+    console.log(`error search results for job${error}`);
+    console.log(error);
+  }
+};
+// see Applicants but find only the jobs
+const seeApplicants = async (req, res) => {
+  const { candidateid } = req.params;
+  // console.log(jobid, candidateid);
+  try {
+    //first find if user has already applied to this job
+    const findUser = await singleJobModel.find({
+      "candidates.candidate":{$exists:true}
+    });
+    if (findUser) {
+      res.json({ success: true, results: findUser });
+    }
+  } catch (error) {
+    console.log(`error search results for job${error}`);
+    console.log(error);
+  }
+};
+// see Applicants
+const seeApplicantsDetails = async (req, res) => {
+  const { candidateid,jobid } = req.params;
+  // console.log(jobid, candidateid);
+  try {
+    //first find if user has already applied to this job
+    const findUser = await singleJobModel.find({
+      "candidates.candidate":{$exists:true},_id:jobid
+    }).populate("candidates").select("candidates");
+    if (findUser) {
+      res.json({ success: true, results: findUser });
     }
   } catch (error) {
     console.log(`error search results for job${error}`);
@@ -562,4 +596,6 @@ module.exports = {
   getcvdata,
   searchResults,
   apply,
+  seeApplicants,
+  seeApplicantsDetails
 };
