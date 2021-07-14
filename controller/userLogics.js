@@ -597,15 +597,16 @@ const approve = async (req, res) => {
 // notifications For ApprovedJobs
 const notificationsForApprovedJobs = async (req, res) => {
   const { candidateid } = req.params;
-  // console.log(jobid, candidateid);
   try {
-    //first find if user has already applied to this job
-    const findUser = await approvedModel
-      .find({"approved.userid": candidateid})
-      .populate({path:"approved.jobid"});
-    if (findUser) {
-      res.json({ success: true, results: findUser });
-    }
+    const data = await approvedModel
+      .find({ "approved.userid": candidateid })
+      .populate("approved.jobid")
+      .select("jobid");
+    // flatMap is used for concat the different arrays into one array
+    //  when we don't know the length of array
+    //  and it is very useful
+    const newdata = data.flatMap((val) => val.approved.map((val) => val.jobid));
+    res.json({ success: true, results: newdata });
   } catch (error) {
     console.log(`error search results for job${error}`);
     console.log(error);
